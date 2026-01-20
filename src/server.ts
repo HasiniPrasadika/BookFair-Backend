@@ -11,7 +11,7 @@ import routes from "./routes";
 import { errorHandler, notFound } from "./middleware/error";
 
 const app = express();
-const port = Number(process.env.PORT) || 4000;
+const port = Number(process.env.PORT) || 8080;
 
 /* ------------------ Security & Middleware ------------------ */
 app.use(helmet());

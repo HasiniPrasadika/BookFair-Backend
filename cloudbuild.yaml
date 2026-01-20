@@ -30,7 +30,7 @@ steps:
       - --add-cloudsql-instances
       - $PROJECT_ID:asia-south1:bookfair-mysql
       - --set-env-vars
-      - DATABASE_URL=mysql://bookfair_user:M40a54dhushani@localhost:3306/bookfair_db?socketPath=/cloudsql/project-77d868b3-770d-4205-818:asia-south1:bookfair-mysql,JWT_SECRET=supersecretjwt
+      - DATABASE_URL=mysql://bookfair_user:M40a54dhushani@/bookfair_db?host=/cloudsql/project-77d868b3-770d-4205-818:asia-south1:bookfair-mysql,JWT_SECRET=supersecretjwt
       - --timeout
       - 300s
 
