@@ -43,6 +43,8 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   reservations  Reservation[]
+
+  @@map("user")
 }
 
 model Stall {
@@ -57,6 +59,8 @@ model Stall {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   reservations Reservation[]
+
+  @@map("stall")
 }
 
 model Reservation {
@@ -74,6 +78,7 @@ model Reservation {
   stall Stall @relation(fields: [stallId], references: [id])
 
   @@unique([userId, stallId])   // a user cannot reserve the same stall twice
+  @@map("reservation")
 }
 
 
