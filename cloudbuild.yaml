@@ -3,13 +3,13 @@ steps:
     args:
       - build
       - -t
-      - asia-south1-docker.pkg.dev/$PROJECT_ID/backend-repo/backend:$COMMIT_SHA
+      - asia-south1-docker.pkg.dev/$PROJECT_ID/backend-repo/backend:latest
       - .
 
   - name: gcr.io/cloud-builders/docker
     args:
       - push
-      - asia-south1-docker.pkg.dev/$PROJECT_ID/backend-repo/backend:$COMMIT_SHA
+      - asia-south1-docker.pkg.dev/$PROJECT_ID/backend-repo/backend:latest
 
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: gcloud
@@ -18,7 +18,7 @@ steps:
       - deploy
       - backend-service
       - --image
-      - asia-south1-docker.pkg.dev/$PROJECT_ID/backend-repo/backend:$COMMIT_SHA
+      - asia-south1-docker.pkg.dev/$PROJECT_ID/backend-repo/backend:latest
       - --region
       - asia-south1
       - --platform
@@ -26,9 +26,11 @@ steps:
       - --allow-unauthenticated
       - --add-cloudsql-instances
       - $PROJECT_ID:asia-south1:bookfair-mysql
+      - --set-env-vars
+      - DATABASE_URL=mysql://bookfair_user:M40a54dhushani@/bookfair_db?host=/cloudsql/$PROJECT_ID:asia-south1:bookfair-mysql,JWT_SECRET=supersecretjwt
 
 images:
-  - asia-south1-docker.pkg.dev/$PROJECT_ID/backend-repo/backend:$COMMIT_SHA
+  - asia-south1-docker.pkg.dev/$PROJECT_ID/backend-repo/backend:latest
 
 options:
   logging: CLOUD_LOGGING_ONLY
