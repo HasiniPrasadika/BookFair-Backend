@@ -13,23 +13,17 @@ import { errorHandler, notFound } from "./middleware/error";
 const app = express();
 const port = Number(process.env.PORT) || 8080;
 
-/* ------------------ Security & Middleware ------------------ */
+/* ------------------ Middleware ------------------ */
 app.use(helmet());
 
 app.use(
   cors({
-    origin: CLIENT_ORIGIN,
+    origin: CLIENT_ORIGIN || "*",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
-app.use((req, res, next) => {
-  res.setHeader("Cross-Origin-Opener-Policy", "unsafe-none");
-  res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
-  next();
-});
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -37,23 +31,27 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 /* ------------------ Routes ------------------ */
 app.use("/api", routes);
 
-/* ------------------ Error Handling ------------------ */
+/* ------------------ Health Check (IMPORTANT) ------------------ */
+app.get("/", (_req, res) => {
+  res.status(200).send("OK");
+});
+
+/* ------------------ Errors ------------------ */
 app.use(notFound);
 app.use(errorHandler);
 
-/* ------------------ Server & DB ------------------ */
-async function startServer() {
+/* ------------------ Start server IMMEDIATELY ------------------ */
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server listening on port ${port}`);
+});
+
+/* ------------------ Connect DB AFTER server starts ------------------ */
+(async () => {
   try {
     await prisma.$connect();
     console.log("Database connected successfully");
-
-    app.listen(port, "0.0.0.0", () => {
-  console.log(`Backend running on port ${port}`);
-});
   } catch (error) {
     console.error("Database connection failed:", error);
-    process.exit(1);
+    // ❗ DO NOT exit — Cloud Run will retry
   }
-}
-
-startServer();
+})();
