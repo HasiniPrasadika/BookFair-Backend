@@ -21,6 +21,6 @@ ENV NODE_ENV=production
 
 COPY --from=builder /app /app
 
-EXPOSE 4000
+EXPOSE 8080
 
 CMD ["npm", "run", "start"]

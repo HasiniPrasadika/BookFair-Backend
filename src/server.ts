@@ -5,12 +5,13 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 
-import { PORT, CLIENT_ORIGIN } from "./config/env";
+import { CLIENT_ORIGIN } from "./config/env";
 import prisma from "./config/db";
 import routes from "./routes";
 import { errorHandler, notFound } from "./middleware/error";
 
 const app = express();
+const port = Number(process.env.PORT) || 4000;
 
 /* ------------------ Security & Middleware ------------------ */
 app.use(helmet());
@@ -46,9 +47,9 @@ async function startServer() {
     await prisma.$connect();
     console.log("Database connected successfully");
 
-    app.listen(PORT, () => {
-      console.log(`Backend running on http://localhost:${PORT}`);
-    });
+    app.listen(port, "0.0.0.0", () => {
+  console.log(`Backend running on port ${port}`);
+});
   } catch (error) {
     console.error("Database connection failed:", error);
     process.exit(1);
